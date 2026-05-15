@@ -26,7 +26,7 @@ A comprehensive framework for training YOLOv8 object detection models with diffe
 
 ScaleVision is designed to systematically evaluate how different augmentation strategies impact YOLOv8 model robustness. The framework trains 6 model variants (M0-M5) with varying augmentation policies and evaluates each under 37 different conditions to measure degradation and resilience.
 
-### Phase 2 Pipeline
+### Pipeline
 
 ```
 Train Models (M0-M5) → Evaluate (37 conditions) → Rank by Robustness → Visualize Results
