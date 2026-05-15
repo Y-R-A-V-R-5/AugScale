@@ -1,0 +1,113 @@
+# =============================================================================
+# configs/evaluation.yaml
+# =============================================================================
+# Defines the 37 evaluation conditions applied to every trained model (M0–M5).
+#
+# Structure:
+#   1 clean baseline evaluation
+#   4 families × 9 conditions each (3 intensities × 3 col_seeds) = 36
+#   ─────────────────────────────────────────────────────────────────
+#   Total: 37 conditions per model
+#
+# Each condition references parameters from augmentations.yaml via
+# family_key + sub_aug_name + intensity_level.
+# col_seeds come from augmentations.yaml: [42, 137, 256]
+#
+# Metrics logged per condition:
+#   map50, map50_95, precision, recall,
+#   delta_map50 (drop from clean baseline),
+#   bbox_iou_mean, conf_variance
+# =============================================================================
+
+# ── Models to evaluate ────────────────────────────────────────────────────────
+models: ["M0", "M1", "M2", "M3", "M4", "M5"]
+
+# ── Dataset ───────────────────────────────────────────────────────────────────
+eval_data:
+  kitti_root: "datasets/kitti"
+  split:      "val"
+  img_size:   640
+  batch_size: 16
+  device:     "0"               # "0" = GPU-0  |  "cpu"
+
+# ── Weights location (written by trainer) ─────────────────────────────────────
+weights_pattern: "experiments/{model_id}/weights/best.pt"
+
+# ── Output ────────────────────────────────────────────────────────────────────
+output:
+  results_dir:           "results"
+  raw_csv:               "results/raw_eval.csv"
+  summary_csv:           "results/summary.csv"
+  heatmap_dir:           "results/heatmaps"
+  curve_dir:             "results/degradation_curves"
+  ranking_csv:           "results/robustness_ranking.csv"
+  model_comparison_png:  "results/model_comparison.png"
+
+# ── Condition 0 — Clean baseline ──────────────────────────────────────────────
+# No augmentation; evaluates on raw KITTI val split.
+clean_baseline:
+  condition_id: 0
+  label:        "Clean Baseline"
+  family:       null
+  aug:          null
+
+# ── Conditions 1–36 — Augmentation family stress tests ────────────────────────
+# Generated programmatically by evaluation/conditions.py from augmentations.yaml
+# but documented here for traceability.
+#
+# Layout per family (9 conditions):
+#   condition_id = base_id + row_idx*3 + col_idx
+#   row_idx ∈ {0,1,2}  → intensity level (mild/moderate/strong)
+#   col_idx ∈ {0,1,2}  → col_seeds[col_idx] ∈ {42, 137, 256}
+#
+family_conditions:
+  geometric:
+    base_condition_id: 1          # conditions 1–9
+    sub_augs:
+      - "Perspective Shift"
+      - "Affine Transform"
+      - "Horizontal Flip"
+
+  weather:
+    base_condition_id: 10         # conditions 10–18
+    sub_augs:
+      - "Fog Simulation"
+      - "Rain Overlay"
+      - "Haze / Atmospheric Scattering"
+
+  blur_noise:
+    base_condition_id: 19         # conditions 19–27
+    sub_augs:
+      - "Gaussian Blur"
+      - "Motion Blur"
+      - "Gaussian Noise"
+
+  illumination:
+    base_condition_id: 28         # conditions 28–36
+    sub_augs:
+      - "Brightness Shift"
+      - "Contrast Adjustment"
+      - "Gamma Correction"
+
+# ── Metrics ───────────────────────────────────────────────────────────────────
+metrics:
+  primary:
+    - map50           # mAP@0.5
+    - map50_95        # mAP@0.5:0.95
+    - precision
+    - recall
+  robustness:
+    - delta_map50     # drop from clean baseline  (negative = degradation)
+    - worst_map50     # worst mAP across all conditions for this model
+    - mean_degradation_slope   # linear fit of mAP vs intensity level
+  stability:
+    - bbox_iou_mean   # mean IoU of predicted boxes vs ground truth
+    - conf_variance   # variance of detection confidence across col_seeds
+
+# ── Robustness ranking weights ────────────────────────────────────────────────
+# Used by evaluation/ranking.py to compute a single robustness score per model.
+ranking_weights:
+  mean_map50:              0.35
+  worst_map50:             0.25
+  mean_delta_map50:        0.25   # less negative = more robust
+  mean_degradation_slope:  0.15   # less negative slope = more stable

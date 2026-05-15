@@ -1,0 +1,222 @@
+# =============================================================================
+# ScaleVision .gitignore — Comprehensive ignore rules
+# =============================================================================
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IDE & Editor Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+.venv/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Python Environment & Packages
+# ─────────────────────────────────────────────────────────────────────────────
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+.env
+.ENV
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Machine Learning & Data Science
+# ─────────────────────────────────────────────────────────────────────────────
+# Large dataset files
+datasets/kitti/images/
+datasets/kitti/labels/
+datasets/kitti_aug/
+datasets/brain_tumor/images/
+datasets/brain_tumor/labels/
+datasets/**/*.jpg
+datasets/**/*.jpeg
+datasets/**/*.png
+datasets/**/*.gif
+datasets/**/*.bmp
+
+# Pre-trained & checkpoint weights (extremely large)
+models/*.pt
+models/*.pth
+experiments/*/weights/
+*.onnx
+*.pb
+*.tflite
+
+# Large results/output files
+results/*.csv
+results/heatmaps/
+results/degradation_curves/
+results/*.png
+results/*.jpg
+
+# Experiment outputs
+experiments/*/eval/
+experiments/*/results.csv
+experiments/*/*.csv
+.runs/
+runs/
+lightning_logs/
+wandb/
+
+# TensorFlow/PyTorch cache
+.tensorboard/
+.pytest_cache/
+*.tfrecord
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Jupyter Notebooks
+# ─────────────────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+notebook/.ipynb_checkpoints/
+*.ipynb~
+.jupyter/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logs & Temporary Files
+# ─────────────────────────────────────────────────────────────────────────────
+logs/
+*.log
+*.txt
+train_logs/
+eval_logs/
+temp/
+tmp/
+*.tmp
+
+# ─────────────────────────────────────────────────────────────────────────────
+# OS-Specific Files
+# ─────────────────────────────────────────────────────────────────────────────
+.AppleDouble
+.LSOverride
+._*
+.apdisk
+ehthumbs.db
+.TemporaryItems
+.Trashes
+$RECYCLE.BIN/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Git-related
+# ─────────────────────────────────────────────────────────────────────────────
+.git/
+.gitkeep
+.gitattributes
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Local Configuration (keep secrets safe)
+# ─────────────────────────────────────────────────────────────────────────────
+.env.local
+.env.*.local
+config_local.yaml
+secrets.yaml
+*.key
+*.pem
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Visuals & Analysis Outputs
+# ─────────────────────────────────────────────────────────────────────────────
+visuals/analysis/*.png
+visuals/analysis/*.jpg
+visuals/augments/*.png
+visuals/augments/*.jpg
+*.html
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Compiled Output & Build Artifacts
+# ─────────────────────────────────────────────────────────────────────────────
+*.o
+*.a
+*.dylib
+.so
+*.dll
+*.exe
+*.class
+*.jar
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Documentation Build Output
+# ─────────────────────────────────────────────────────────────────────────────
+docs/_build/
+site/
+.docs/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IDE-Specific Cache
+# ─────────────────────────────────────────────────────────────────────────────
+.pylint.d/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Docker & Container-Related
+# ─────────────────────────────────────────────────────────────────────────────
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Miscellaneous
+# ─────────────────────────────────────────────────────────────────────────────
+.DS_Store
+*.bak
+*.swp
+*.swo
+.redo
+*.redo
+

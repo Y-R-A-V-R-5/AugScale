@@ -1,0 +1,76 @@
+# =============================================================================
+# configs/train.yaml
+# =============================================================================
+# Shared training hyperparameters for all Phase-2 models (M0 – M5).
+#
+# Rules (Phase-2 spec):
+#   - Same YOLOv8 architecture for every model
+#   - Same dataset split
+#   - Same hyperparameters
+#   - Only the augmentation policy differs (defined in augmentations.yaml)
+#
+# Override any value from scripts via --cfg-override key=value
+# =============================================================================
+
+# ── Model ─────────────────────────────────────────────────────────────────────
+yolo_variant: "models/yolov8m.pt"   # loaded from .\models\*.pt
+
+# ── Models to train ───────────────────────────────────────────────────────────
+# active_models: single source of truth — edit this list to change which models
+# are trained / evaluated. All scripts read this instead of hardcoding M0-M5.
+active_models: ["M0", "M1", "M2", "M3", "M4", "M5"]
+
+models:
+  M0: { policy: baseline,     description: "No augmentation"              }
+  M1: { policy: geometric,    description: "Family A — Geometric"         }
+  M2: { policy: weather,      description: "Family B — Weather"           }
+  M3: { policy: blur_noise,   description: "Family C — Blur / Noise"      }
+  M4: { policy: illumination, description: "Family D — Illumination"      }
+  M5: { policy: mixed,        description: "Mixed Robust (all families)"  }
+
+# ── Dataset ───────────────────────────────────────────────────────────────────
+data:
+  kitti_root:  "datasets/kitti"
+  data_yaml:   "datasets/kitti/kitti.yaml"
+  img_size:    640
+  aug_out_dir: "datasets/kitti_aug"   # M0 only — baseline images copied here
+
+# ── Hyperparameters (identical for all models) ────────────────────────────────
+hyperparams:
+  epochs:           100
+  batch_size:       18
+  lr0:              0.01          # initial learning rate
+  lrf:              0.01          # final LR factor  (final_lr = lr0 * lrf)
+  momentum:         0.937
+  weight_decay:     0.0005
+  warmup_epochs:    10.0
+  warmup_momentum:  0.8
+  warmup_bias_lr:   0.1
+  optimizer:        "SGD"
+  seed:             42
+  workers:          4
+  device:           "0"           # "0" = GPU-0  |  "cpu" = CPU only
+  save_period:      10            # checkpoint every N epochs
+
+# ── Ultralytics built-in augmentations — ALL DISABLED ─────────────────────────
+# We apply our own controlled policy; Ultralytics default aug must be off.
+yolo_aug_overrides:
+  mosaic:       0.0
+  mixup:        0.0
+  copy_paste:   0.0
+  degrees:      0.0
+  translate:    0.0
+  scale:        0.0
+  shear:        0.0
+  perspective:  0.0
+  flipud:       0.0
+  fliplr:       0.0
+  hsv_h:        0.0
+  hsv_s:        0.0
+  hsv_v:        0.0
+
+# ── Output ────────────────────────────────────────────────────────────────────
+output:
+  project:    "./experiments"       # root folder  ->  experiments/<model_id>/
+  exist_ok:   true
+  verbose:    true

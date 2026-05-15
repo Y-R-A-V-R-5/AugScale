@@ -1,0 +1,224 @@
+# =============================================================================
+# configs/augmentations.yaml
+# =============================================================================
+# Single source of truth for ALL augmentation parameters used in Phase-1
+# (augmentation.ipynb) and Phase-2 training / evaluation.
+#
+# Structure:
+#   families:
+#     <family_key>:
+#       label:    human-readable name
+#       color:    hex accent used in plots
+#       subs:
+#         - name: sub-augmentation name
+#           intensities:
+#             - level: mild | moderate | strong | light | low ...
+#               <aug-specific params>
+#
+# Parameter values are IDENTICAL to augmentation.ipynb registry.
+# =============================================================================
+
+col_seeds: [42, 137, 256]          # column seeds used in Phase-1 3x3 plots
+
+families:
+
+  # ── Family A — Geometric / Spatial Transformations ─────────────────────────
+  geometric:
+    label: "A — Geometric / Spatial Transformations"
+    color: "#2980b9"
+    subs:
+
+      - name: "Perspective Shift"
+        aug:  perspective
+        row_labels:
+          - "Mild  (scale 0.02–0.04)"
+          - "Moderate  (scale 0.06–0.09)"
+          - "Strong  (scale 0.12–0.16)"
+        intensities:
+          - level: mild
+            scale: [0.02, 0.04]
+          - level: moderate
+            scale: [0.06, 0.09]
+          - level: strong
+            scale: [0.12, 0.16]
+
+      - name: "Affine Transform"
+        aug:  affine
+        row_labels:
+          - "Mild  (±5° / ±3%)"
+          - "Moderate  (±12° / ±8%)"
+          - "Strong  (±20° / ±14%)"
+        intensities:
+          - level: mild
+            rotate:            [-5,  5]
+            scale:             [0.95, 1.05]
+            translate_percent: [-0.03, 0.03]
+          - level: moderate
+            rotate:            [-12, 12]
+            scale:             [0.88, 1.12]
+            translate_percent: [-0.08, 0.08]
+          - level: strong
+            rotate:            [-20, 20]
+            scale:             [0.80, 1.20]
+            translate_percent: [-0.14, 0.14]
+
+      - name: "Horizontal Flip"
+        aug:  hflip
+        row_labels:
+          - "Mirror (symmetry case)"
+          - "Mirror (repeated sample 2)"
+          - "Mirror (repeated sample 3)"
+        intensities:
+          - level: mild
+            p: 1.0
+          - level: moderate
+            p: 1.0
+          - level: strong
+            p: 1.0
+
+  # ── Family B — Weather & Environmental Conditions ──────────────────────────
+  weather:
+    label: "B — Weather & Environmental Conditions"
+    color: "#27ae60"
+    subs:
+
+      - name: "Fog Simulation"
+        aug:  fog
+        row_labels:
+          - "Light Fog  (α=0.20)"
+          - "Moderate Fog  (α=0.45)"
+          - "Dense Fog  (α=0.72)"
+        intensities:
+          - level: light
+            alpha: 0.20
+          - level: moderate
+            alpha: 0.45
+          - level: dense
+            alpha: 0.72
+
+      - name: "Rain Overlay"
+        aug:  rain
+        row_labels:
+          - "Light Rain  (150 drops)"
+          - "Moderate Rain  (380 drops)"
+          - "Heavy Rain  (700 drops)"
+        intensities:
+          - level: light
+            n_drops:  150
+            darkness: 0.02
+          - level: moderate
+            n_drops:  380
+            darkness: 0.12
+          - level: heavy
+            n_drops:  700
+            darkness: 0.22
+
+      - name: "Haze / Atmospheric Scattering"
+        aug:  haze
+        row_labels:
+          - "Light Haze  (s=0.15)"
+          - "Moderate Haze  (s=0.38)"
+          - "Heavy Haze  (s=0.60)"
+        intensities:
+          - level: light
+            strength: 0.15
+          - level: moderate
+            strength: 0.38
+          - level: heavy
+            strength: 0.60
+
+  # ── Family C — Blur / Noise Degradation ────────────────────────────────────
+  blur_noise:
+    label: "C — Blur / Noise Degradation"
+    color: "#8e44ad"
+    subs:
+
+      - name: "Gaussian Blur"
+        aug:  gaussian_blur
+        row_labels:
+          - "Low  (k=3–5)"
+          - "Medium  (k=9–13)"
+          - "High  (k=19–23)"
+        intensities:
+          - level: low
+            blur_limit: [3, 5]
+          - level: medium
+            blur_limit: [9, 13]
+          - level: high
+            blur_limit: [19, 23]
+
+      - name: "Motion Blur"
+        aug:  motion_blur
+        row_labels:
+          - "Low  (k=7)"
+          - "Medium  (k=15)"
+          - "High  (k=25)"
+        intensities:
+          - level: low
+            blur_limit: 7
+          - level: medium
+            blur_limit: 15
+          - level: high
+            blur_limit: 25
+
+      - name: "Gaussian Noise"
+        aug:  gaussian_noise
+        row_labels:
+          - "Low  (σ=0.01–0.03)"
+          - "Medium  (σ=0.05–0.09)"
+          - "High  (σ=0.12–0.18)"
+        intensities:
+          - level: low
+            std_range: [0.01, 0.03]
+          - level: medium
+            std_range: [0.05, 0.09]
+          - level: high
+            std_range: [0.12, 0.18]
+
+  # ── Family D — Illumination / Photometric Variations ───────────────────────
+  illumination:
+    label: "D — Illumination / Photometric Variations"
+    color: "#e67e22"
+    subs:
+
+      - name: "Brightness Shift"
+        aug:  brightness
+        row_labels:
+          - "Mild  (±0.15)"
+          - "Moderate  (±0.35)"
+          - "Strong  (±0.55)"
+        intensities:
+          - level: mild
+            brightness_limit: [-0.15,  0.15]
+          - level: moderate
+            brightness_limit: [-0.35,  0.35]
+          - level: strong
+            brightness_limit: [-0.55,  0.55]
+
+      - name: "Contrast Adjustment"
+        aug:  contrast
+        row_labels:
+          - "Mild  (±0.15)"
+          - "Moderate  (±0.35)"
+          - "Strong  (±0.55)"
+        intensities:
+          - level: mild
+            contrast_limit: [-0.15,  0.15]
+          - level: moderate
+            contrast_limit: [-0.35,  0.35]
+          - level: strong
+            contrast_limit: [-0.55,  0.55]
+
+      - name: "Gamma Correction"
+        aug:  gamma
+        row_labels:
+          - "Mild  (γ=85–100)"
+          - "Moderate  (γ=40–70  dark)"
+          - "Strong  (γ=150–200  bright)"
+        intensities:
+          - level: mild
+            gamma_limit: [85,  100]
+          - level: moderate
+            gamma_limit: [40,   70]
+          - level: strong
+            gamma_limit: [150, 200]
